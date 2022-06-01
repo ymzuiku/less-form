@@ -8,12 +8,13 @@ import { FormContext } from "./useForm";
 type LoadType = "value" | "error";
 
 const emptyCtx = {
+  name: "",
   value: "",
   error: "",
-  setTouched: () => {
+  onChange: (e: any) => {
     //
   },
-  setValue: () => {
+  onBlur: (e: any) => {
     //
   },
 };
@@ -35,22 +36,49 @@ export function useFieldByContext<T>(
   );
   useEffect(() => {
     if (ctx.val[name]) {
-      field.setTouched();
+      field.onChange(ctx.val[name]);
     }
   }, []);
 
   const field = {
-    value: ob[name],
+    name,
+    value: ob[name] as any,
     error: typeof ctx.errors[name] === "undefined" ? "" : ctx.errors[name],
-    setTouched: () => {
+    onBlur: (e: any) => {
+      if (e.persist) {
+        e.persist();
+      }
       if (!ctx.touched[name]) {
         ctx.touched[name] = true;
-        field.setValue(ob[name]);
+        field.onChange(ob[name]);
       }
     },
-    setValue: (val: unknown) => {
-      (ctx.val as any)[name] = val;
-      updator(ctx);
+    onChange: (val: any) => {
+      let typed = typeof val;
+      let value;
+      if (typed === "object" && val.currentTarget) {
+        const type = val.currentTarget.type;
+
+        if (type === "checkbox" || type === "checkbox") {
+          value = !!val.currentTarget.checked;
+        } else if (val.currentTarget.multiple) {
+          const options = val.currentTarget.options;
+          const values = [];
+          for (var i = 0, l = options.length; i < l; i++) {
+            if (options[i].selected) {
+              values.push(options[i].value);
+            }
+          }
+          value = values;
+        } else {
+          value = val.currentTarget.value;
+        }
+        (ctx.val as any)[name] = value;
+        updator(ctx);
+      } else {
+        (ctx.val as any)[name] = val;
+        updator(ctx);
+      }
     },
   };
 

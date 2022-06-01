@@ -1,10 +1,15 @@
-import { CSSProperties, DOMAttributes } from "react";
+import { CSSProperties } from "react";
 import { useField } from "./useField";
 
-export interface FieldProps extends DOMAttributes<HTMLInputElement> {
+export interface FieldProps
+  extends React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
   className?: string;
   style?: CSSProperties;
   placeholder?: string;
+  type?: string;
   name: string;
 }
 
@@ -14,10 +19,10 @@ export function Field({ name, ...rest }: FieldProps) {
   return (
     <input
       name={name}
-      onChange={(e) => {
-        ctx.setValue(e.currentTarget.value);
-      }}
-      onBlur={ctx.setTouched}
-      {...rest}></input>
+      value={ctx.value || ""}
+      onChange={ctx.onChange}
+      onBlur={ctx.onBlur}
+      {...rest}
+    ></input>
   );
 }
