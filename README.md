@@ -9,13 +9,7 @@ Build forms in React, only Controlled Components.
 ## Example
 
 ```tsx
-import {
-  ErrorMessage,
-  Field,
-  FormProvider,
-  useField,
-  useForm,
-} from "less-form";
+import { ErrorMessage, Field, LessForm, useField, useForm } from "less-form";
 import * as yup from "yup";
 
 const schema = yup.object({
@@ -42,7 +36,7 @@ function App() {
     <div className="App">
       <div style={{ marginTop: 20 }}>Less form(use Field)</div>
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
-        <FormProvider value={form}>
+        <LessForm value={form}>
           <div>
             <Field type="email" placeholder="please input email" name="email" />
             <ErrorMessage name="email" />
@@ -59,17 +53,17 @@ function App() {
             />
             <ErrorMessage name="password" />
           </div>
-        </FormProvider>
+        </LessForm>
       </div>
       <div style={{ marginTop: 20 }}>Less form(use Custom Component)</div>
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
-        <FormProvider value={form}>
+        <LessForm value={form}>
           <Email />
           <Phone />
           <Password />
           <Friends />
           <Checkbox />
-        </FormProvider>
+        </LessForm>
       </div>
     </div>
   );

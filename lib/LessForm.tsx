@@ -5,9 +5,6 @@ import { FormContext } from "./useForm";
 const SingleProvider = SignleContext.Provider;
 
 // not have form children
-export function FormProvider(props: {
-  value: FormContext<any>;
-  children: any;
-}) {
+export function LessForm(props: { value: FormContext<any>; children: any }) {
   return <SingleProvider {...props}></SingleProvider>;
 }

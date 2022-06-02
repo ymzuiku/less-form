@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "less-form": "^0.0.5",
+    "less-form": "latest",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "yup": "^0.32.11"

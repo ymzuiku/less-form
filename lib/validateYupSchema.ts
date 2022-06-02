@@ -7,7 +7,6 @@ export async function validateYupSchema(
   values: Record<string, any>,
   key?: string
 ) {
-  console.time("yup");
   const errors: Record<string, string> = {};
 
   if (key) {
@@ -30,6 +29,5 @@ export async function validateYupSchema(
       }
     }
   }
-  console.timeEnd("yup");
   return errors;
 }

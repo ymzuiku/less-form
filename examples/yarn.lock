@@ -597,13 +597,6 @@ json5@^2.2.1:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.1.tgz#655d50ed1e6f95ad1a3caababd2b0efda10b395c"
   integrity sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA==
 
-less-form@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/less-form/-/less-form-0.0.5.tgz#e29fa4a169ead40848a0398f6e6f12fda158a078"
-  integrity sha512-Ar/48ffIf7oIbi4VM7uVfxWqa0/6eWeWUEMR86jghdi2oMvTjhNRPkHdP1Lhp7Zh7ZPK+FLiTAo1n1l31Yd/oA==
-  dependencies:
-    react-ob "^2.2.2"
-
 lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
@@ -677,11 +670,6 @@ react-dom@^18.0.0:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.22.0"
-
-react-ob@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-ob/-/react-ob-2.2.2.tgz#8e056d7dc916f60622ede32c15e0f86819e79874"
-  integrity sha512-uBQIlcaCHJC0hph7fldDSS9yegYHQOyj/2p81WK9FhZQU7G+QKrpIKyV5AdSDw2HSRHLRuTvzJP1uHvjJH9SVw==
 
 react-refresh@^0.13.0:
   version "0.13.0"

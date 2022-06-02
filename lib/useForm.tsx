@@ -9,7 +9,8 @@ interface ConfigToContext<T> {
     changeName?: string
   ) => Promise<Partial<Record<keyof T, string>>>;
   validateSchema?: any;
-  handleChange?: (name: string, value: any) => any;
+  // 返回新的values，以实现联动
+  handleChange?: (values: T, name: string) => T;
   entryCheckAll?: boolean;
 }
 

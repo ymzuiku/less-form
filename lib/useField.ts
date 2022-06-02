@@ -76,7 +76,7 @@ export function useFieldByContext<T>(
       } else if (typed === "object" && val.currentTarget) {
         const type = val.currentTarget.type;
 
-        if (type === "checkbox" || type === "checkbox") {
+        if (type === "checkbox" || type === "radio") {
           value = !!val.currentTarget.checked;
         } else if (val.currentTarget.multiple) {
           const options = val.currentTarget.options;
@@ -94,11 +94,11 @@ export function useFieldByContext<T>(
         value = val;
       }
 
+      (ctx.val as any)[name] = value;
       if (ctx.handleChange) {
-        value = ctx.handleChange(name as string, value);
+        ctx.val = ctx.handleChange(ctx.val, name as string);
       }
 
-      (ctx.val as any)[name] = value;
       updator(ctx, name as string);
     },
   };

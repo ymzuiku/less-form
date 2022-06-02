@@ -1,10 +1,4 @@
-import {
-  ErrorMessage,
-  Field,
-  FormProvider,
-  useField,
-  useForm,
-} from "less-form";
+import { ErrorMessage, Field, LessForm, useField, useForm } from "less-form";
 import * as yup from "yup";
 
 const schema = yup.object({
@@ -12,7 +6,8 @@ const schema = yup.object({
   phone: yup.string().min(6).max(13).required(),
   password: yup.string().min(6).required(),
   friends: yup.array().min(3).required(),
-  isMan: yup.bool().required(),
+  isMan: yup.bool().equals([true]).required(),
+  radio: yup.bool().equals([true]).required(),
 });
 
 function App() {
@@ -23,7 +18,9 @@ function App() {
       password: "",
       friends: [],
       isMan: false,
+      radio: false,
     },
+    entryCheckAll: true,
     validateSchema: schema,
   });
 
@@ -31,7 +28,7 @@ function App() {
     <div className="App">
       <div style={{ marginTop: 20 }}>Less form(use Field)</div>
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
-        <FormProvider value={form}>
+        <LessForm value={form}>
           <div>
             <Field type="email" placeholder="please input email" name="email" />
             <ErrorMessage name="email" />
@@ -48,17 +45,18 @@ function App() {
             />
             <ErrorMessage name="password" />
           </div>
-        </FormProvider>
+        </LessForm>
       </div>
       <div style={{ marginTop: 20 }}>Less form(use Custom Component)</div>
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
-        <FormProvider value={form}>
+        <LessForm value={form}>
           <Email />
           <Phone />
           <Password />
           <Friends />
           <Checkbox />
-        </FormProvider>
+          <Radio />
+        </LessForm>
       </div>
     </div>
   );
@@ -121,6 +119,17 @@ function Checkbox() {
   return (
     <div>
       <input type="checkbox" {...field}></input>
+      <div>{field.error}</div>
+    </div>
+  );
+}
+
+function Radio() {
+  const field = useField("radio");
+
+  return (
+    <div>
+      <input type="radio" {...field}></input>
       <div>{field.error}</div>
     </div>
   );
