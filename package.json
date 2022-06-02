@@ -1,6 +1,6 @@
 {
   "name": "less-form",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "umd/index.js",
   "types": "lib/index.ts",
   "exports": {
@@ -35,6 +35,6 @@
   },
   "homepage": "git+https://github.com/ymzuiku/less-form.git",
   "dependencies": {
-    "react-ob": "^2.2.3"
+    "react-ob": "^2.2.4"
   }
 }

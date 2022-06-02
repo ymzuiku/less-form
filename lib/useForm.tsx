@@ -3,25 +3,24 @@ import { useEffect, useMemo, useRef } from "react";
 import { CreateObserver, ObControl } from "react-ob";
 import { updator } from "./updator";
 
-export interface FormObConfig<T> {
-  initialValues: T;
+interface ConfigToContext<T> {
   validate?: (
-    values: T
-  ) => Promise<Record<keyof T, string>> | Record<keyof T, string>;
+    values: T,
+    changeName?: string
+  ) => Promise<Partial<Record<keyof T, string>>>;
   validateSchema?: any;
-  initErrors?: Partial<Record<keyof T, string>>;
+  handleChange?: (name: string, value: any) => any;
   entryCheckAll?: boolean;
-  handleChange?: (values: T) => T;
 }
 
-export interface FormContext<T> extends ObControl<T> {
-  validate?: (
-    values: T
-  ) => Promise<Record<keyof T, string>> | Record<keyof T, string>;
-  validateSchema?: any;
+export interface FormObConfig<T> extends ConfigToContext<T> {
+  initialValues: T;
+  initErrors?: Partial<Record<keyof T, string>>;
+}
+
+export interface FormContext<T> extends ObControl<T>, ConfigToContext<T> {
   errors: Partial<Record<keyof T, string>>;
   touched: Record<keyof T, boolean>;
-  entryCheckAll: boolean;
 }
 
 export type FormContextAny = FormContext<any>;
@@ -32,8 +31,8 @@ export function useForm<T>({
   validate,
   entryCheckAll,
   validateSchema,
-}: // onSubmit,
-FormObConfig<T>): FormContext<T> {
+  handleChange,
+}: FormObConfig<T>): FormContext<T> {
   const ref = useRef<any>(CreateObserver(initialValues));
 
   useEffect(() => {
@@ -55,6 +54,7 @@ FormObConfig<T>): FormContext<T> {
       touched,
       entryCheckAll: !!entryCheckAll,
       validateSchema,
+      handleChange,
     };
 
     return ref.current;

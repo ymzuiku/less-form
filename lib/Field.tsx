@@ -19,7 +19,7 @@ export function Field({ name, ...rest }: FieldProps) {
   return (
     <input
       name={name}
-      value={ctx.value || ""}
+      value={ctx.value}
       onChange={ctx.onChange}
       onBlur={ctx.onBlur}
       {...rest}

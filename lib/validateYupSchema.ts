@@ -1,16 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export function validateYupSchema(schema: any, values: Record<string, any>) {
+const conf = { abortEarly: false };
+
+export async function validateYupSchema(
+  schema: any,
+  values: Record<string, any>,
+  key?: string
+) {
+  console.time("yup");
   const errors: Record<string, string> = {};
-  const conf = { abortEarly: false };
-  Object.keys(values).forEach((key) => {
+
+  if (key) {
     try {
-      schema.validateSyncAt(key, values, conf);
+      await schema.validateAt(key, values, conf);
     } catch (e: any) {
       if (e && e.errors && e.errors[0]) {
         errors[key] = e.errors[0];
       }
     }
-  });
+  } else {
+    const list = Object.keys(values);
+    for (const key of list) {
+      try {
+        await schema.validateAt(key, values, conf);
+      } catch (e: any) {
+        if (e && e.errors && e.errors[0]) {
+          errors[key] = e.errors[0];
+        }
+      }
+    }
+  }
+  console.timeEnd("yup");
   return errors;
 }

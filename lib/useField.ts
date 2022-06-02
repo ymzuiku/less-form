@@ -7,7 +7,15 @@ import { FormContext } from "./useForm";
 
 type LoadType = "value" | "error";
 
-const emptyCtx = {
+interface FieldContext<T> {
+  name: keyof T;
+  value: any;
+  error: Partial<Record<keyof T, string>>[keyof T];
+  onChange: (e: any) => any;
+  onBlur: (e: any) => any;
+}
+
+const emptyCtx: FieldContext<any> = {
   name: "",
   value: "",
   error: "",
@@ -23,17 +31,20 @@ export function useFieldByContext<T>(
   ctx: FormContext<T>,
   name: keyof T,
   loadType?: LoadType
-) {
+): FieldContext<T> {
   if (!ctx) {
     return emptyCtx;
   }
+
+  // 根据 loadType 判断是监听 value 还是 error 或者两者均监听
   const ob = useObserver(ctx, (v) =>
     !loadType
       ? [v[name], ctx.errors[name]]
-      : loadType == "value"
-      ? [v[name]]
-      : [ctx.errors[name]]
+      : loadType == "error"
+      ? [ctx.errors[name]]
+      : [v[name]]
   );
+
   useEffect(() => {
     if (ctx.val[name]) {
       field.onChange(ctx.val[name]);
@@ -42,7 +53,7 @@ export function useFieldByContext<T>(
 
   const field = {
     name,
-    value: ob[name] as any,
+    value: ob[name] == undefined ? "" : ob[name],
     error: typeof ctx.errors[name] === "undefined" ? "" : ctx.errors[name],
     onBlur: (e: any) => {
       if (e.persist) {
@@ -54,9 +65,15 @@ export function useFieldByContext<T>(
       }
     },
     onChange: (val: any) => {
+      if (!ctx.touched[name]) {
+        ctx.touched[name] = true;
+      }
       let typed = typeof val;
       let value;
-      if (typed === "object" && val.currentTarget) {
+
+      if (typed === "undefined") {
+        value = "";
+      } else if (typed === "object" && val.currentTarget) {
         const type = val.currentTarget.type;
 
         if (type === "checkbox" || type === "checkbox") {
@@ -73,12 +90,16 @@ export function useFieldByContext<T>(
         } else {
           value = val.currentTarget.value;
         }
-        (ctx.val as any)[name] = value;
-        updator(ctx);
       } else {
-        (ctx.val as any)[name] = val;
-        updator(ctx);
+        value = val;
       }
+
+      if (ctx.handleChange) {
+        value = ctx.handleChange(name as string, value);
+      }
+
+      (ctx.val as any)[name] = value;
+      updator(ctx, name as string);
     },
   };
 

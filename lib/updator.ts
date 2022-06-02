@@ -2,7 +2,10 @@
 import { FormContext } from "./useForm";
 import { validateYupSchema } from "./validateYupSchema";
 
-function checkTouched(formOb: FormContext<any>, errors: Record<string, string>) {
+function checkTouched(
+  formOb: FormContext<any>,
+  errors: Record<string, string>
+) {
   if (formOb.entryCheckAll) {
     return errors;
   }
@@ -16,14 +19,14 @@ function checkTouched(formOb: FormContext<any>, errors: Record<string, string>) 
   return nextErrors;
 }
 
-export function updator(ctx: FormContext<any>) {
+export async function updator(ctx: FormContext<any>, key?: string) {
   if (ctx.validate) {
-    Promise.resolve(ctx.validate(ctx.val)).then((errors) => {
-      ctx.errors = checkTouched(ctx, errors);
-      ctx.next();
-    });
+    const errors: any = await Promise.resolve(ctx.validate(ctx.val, key));
+    ctx.errors = checkTouched(ctx, errors);
+    ctx.next();
   } else if (ctx.validateSchema) {
-    ctx.errors = checkTouched(ctx, validateYupSchema(ctx.validateSchema, ctx.val));
+    const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
+    ctx.errors = checkTouched(ctx, errors);
     ctx.next();
   } else {
     ctx.next();
