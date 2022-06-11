@@ -12,7 +12,6 @@ interface ConfigToContext<T> {
   // 返回新的values，以实现联动
   handleChange?: (values: T, name: string) => T;
   entryValidateAll?: boolean;
-  validateFirst?: boolean;
 }
 
 export interface FormObConfig<T> extends ConfigToContext<T> {
@@ -25,6 +24,7 @@ export interface FormContext<T> extends ObControl<T>, ConfigToContext<T> {
   touched: Record<keyof T, boolean>;
   /** 验证所有参数，并且返回遇到的第一个错误 */
   validateAll: () => Promise<string>;
+  validateKey: (key: keyof T) => Promise<string>;
   fields: Set<string>;
   contentValues: () => T;
 }
@@ -62,13 +62,26 @@ export function useForm<T>({
       touched,
       entryCheckAll: !!entryValidateAll,
       validateSchema,
-      validateFirst: false,
       validateAll: async () => {
         const fields: Set<string> = ref.current.fields;
         fields.forEach((key) => {
           (ref.current.touched as any)[key] = true;
         });
         await updator(ref.current);
+        let err = "";
+        fields.forEach((k) => {
+          if (!err && ref.current.errors[k]) {
+            err = ref.current.errors[k];
+          }
+        });
+        return err;
+      },
+      validateKey: async (key: string) => {
+        const fields: Set<string> = ref.current.fields;
+        fields.forEach((key) => {
+          (ref.current.touched as any)[key] = true;
+        });
+        await updator(ref.current, key);
         let err = "";
         fields.forEach((k) => {
           if (!err && ref.current.errors[k]) {

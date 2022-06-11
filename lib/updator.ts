@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormContext } from "./useForm";
+import { validateTiny } from "./validateTiny";
 import { validateYupSchema } from "./validateYupSchema";
 
 function checkTouched(
@@ -13,7 +14,10 @@ function checkTouched(
   const nextErrors = {} as Partial<Record<keyof any, string>>;
   Object.keys(formOb.touched).forEach((key) => {
     if ((formOb.touched as any)[key]) {
-      (nextErrors as any)[key] = (errors as any)[key];
+      const err = (errors as any)[key];
+      if (err !== undefined) {
+        (nextErrors as any)[key] = err;
+      }
     }
   });
   return nextErrors;
@@ -22,12 +26,16 @@ function checkTouched(
 export async function updator(ctx: FormContext<any>, key?: string) {
   if (ctx.validate) {
     const errors: any = await Promise.resolve(ctx.validate(ctx.val, key));
-    ctx.errors = checkTouched(ctx, errors);
+    Object.assign(ctx.errors, checkTouched(ctx, errors));
   } else if (ctx.validateSchema) {
-    const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
-    ctx.errors = checkTouched(ctx, errors);
+    // 兼容 yup 的校验
+    if (ctx.validateSchema._blacklist) {
+      const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
+      Object.assign(ctx.errors, checkTouched(ctx, errors));
+    } else {
+      const errors = validateTiny(ctx.validateSchema, ctx.val, key);
+      Object.assign(ctx.errors, checkTouched(ctx, errors));
+    }
   }
-  ctx.validateFirst = true;
-  // ctx.validationPassed = !!Object.keys(ctx.errors).find((k) => !!ctx.errors[k]);
   ctx.next();
 }

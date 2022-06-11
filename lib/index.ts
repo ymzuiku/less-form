@@ -5,4 +5,5 @@ export * from "./LessForm";
 export * from "./useField";
 export * from "./useFields";
 export * from "./useForm";
-export * from "./validateYupSchema";
+// export * from "./validateYupSchema";
+export * from "./validateTiny";
