@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { CreateObserver, ObControl } from "react-ob";
 import { updator } from "./updator";
 
@@ -11,7 +11,6 @@ interface ConfigToContext<T> {
   validateSchema?: any;
   // 返回新的values，以实现联动
   handleChange?: (values: T, name: string) => T;
-  entryValidateAll?: boolean;
 }
 
 export interface FormObConfig<T> extends ConfigToContext<T> {
@@ -24,6 +23,7 @@ export interface FormContext<T> extends ObControl<T>, ConfigToContext<T> {
   touched: Record<keyof T, boolean>;
   /** 验证所有参数，并且返回遇到的第一个错误 */
   validateAll: () => Promise<string>;
+  /** 验证某参数，并且错误 */
   validateKey: (key: keyof T) => Promise<string>;
   fields: string[];
   keepValues: (keys?: string[]) => T;
@@ -36,17 +36,10 @@ export function useForm<T>({
   initialValues,
   initErrors,
   validate,
-  entryValidateAll,
   validateSchema,
   handleChange,
 }: FormObConfig<T>): FormContext<T> {
   const ref = useRef<any>(CreateObserver(initialValues));
-
-  useEffect(() => {
-    if (entryValidateAll && ref.current.validateAll) {
-      ref.current.validateAll();
-    }
-  }, []);
 
   return useMemo(() => {
     const fields = Object.keys(initialValues);
@@ -61,7 +54,6 @@ export function useForm<T>({
       errors: initErrors || {},
       fields,
       touched,
-      entryCheckAll: !!entryValidateAll,
       validateSchema,
       findFirstError: () => {
         const schema = ref.current.validateSchema;
@@ -95,7 +87,7 @@ export function useForm<T>({
       validateKey: async (key: string) => {
         (ref.current.touched as any)[key] = true;
         await updator(ref.current, key);
-        return ref.current.findFirstError();
+        return ref.current.errors[key];
       },
       keepValues: (keys?: string[]) => {
         const fields = keys || ref.current.fields;

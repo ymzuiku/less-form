@@ -6,9 +6,6 @@ function checkTouched(
   formOb: FormContext<any>,
   errors: Record<string, string>
 ) {
-  if (formOb.entryValidateAll) {
-    return errors;
-  }
   // 正常情况下，只显示点击过的错误
   const nextErrors = {} as Partial<Record<keyof any, string>>;
   Object.keys(formOb.touched).forEach((key) => {
