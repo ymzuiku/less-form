@@ -5,7 +5,7 @@ import { SignleContext } from "./SingleContext";
 import { updator } from "./updator";
 import { FormContext } from "./useForm";
 
-type LoadType = "value" | "error";
+export type LoadType = "value" | "error";
 
 interface FieldContext<T> {
   name: keyof T;
@@ -106,7 +106,10 @@ export function useFieldByContext<T>(
   return field;
 }
 
-export function useField<T>(name: keyof T, loadType?: LoadType) {
+export function useField<T>(
+  name: keyof T,
+  loadType?: LoadType
+): FieldContext<T> {
   const ctx = useContext(SignleContext);
   return useFieldByContext(ctx, name, loadType);
 }

@@ -20,7 +20,7 @@ function App() {
       isMan: false,
       radio: false,
     },
-    entryCheckAll: true,
+    entryValidateAll: true,
     validateSchema: schema,
   });
 

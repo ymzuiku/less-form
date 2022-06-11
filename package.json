@@ -1,6 +1,6 @@
 {
   "name": "less-form",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "main": "umd/index.js",
   "types": "lib/index.ts",
   "exports": {

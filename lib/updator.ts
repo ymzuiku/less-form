@@ -6,7 +6,7 @@ function checkTouched(
   formOb: FormContext<any>,
   errors: Record<string, string>
 ) {
-  if (formOb.entryCheckAll) {
+  if (formOb.entryValidateAll) {
     return errors;
   }
   // 正常情况下，只显示点击过的错误
@@ -23,12 +23,11 @@ export async function updator(ctx: FormContext<any>, key?: string) {
   if (ctx.validate) {
     const errors: any = await Promise.resolve(ctx.validate(ctx.val, key));
     ctx.errors = checkTouched(ctx, errors);
-    ctx.next();
   } else if (ctx.validateSchema) {
     const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
     ctx.errors = checkTouched(ctx, errors);
-    ctx.next();
-  } else {
-    ctx.next();
   }
+  ctx.validateFirst = true;
+  // ctx.validationPassed = !!Object.keys(ctx.errors).find((k) => !!ctx.errors[k]);
+  ctx.next();
 }

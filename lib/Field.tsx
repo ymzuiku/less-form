@@ -13,7 +13,7 @@ export interface FieldProps
   name: string;
 }
 
-export function Field({ name, ...rest }: FieldProps) {
+export function Field({ name, children, ...rest }: FieldProps) {
   const ctx = useField(name);
 
   return (
