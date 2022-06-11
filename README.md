@@ -5,19 +5,20 @@ Build forms in React, only Controlled Components.
 - Controlled Components
 - Only update you need
 - API like: [formik](https://formik.org/)
+- Validate compatible [Soke](https://github.com/ymzuiku/soke) 、 [Yup](https://github.com/jquense/yup)
 
 ## Example
 
 ```tsx
-import { ErrorMessage, Field, LessForm, useField, useForm } from "less-form";
-import * as yup from "yup";
+import { ErrorMessage, Field, LessForm, useField, useForm, soke } from "less-form";
+import { soke } from "soke";
 
-const schema = yup.object({
-  email: yup.string().email().required(),
-  phone: yup.string().min(6).max(13).required(),
-  password: yup.string().min(6).required(),
-  friends: yup.array().min(3).required(),
-  isMan: yup.bool().required(),
+const schema = soke.object({
+  email: soke.string().email().required(),
+  phone: soke.string().min(6).max(13).required(),
+  password: soke.string().min(6).required(),
+  friends: soke.array().min(3).required(),
+  isMan: soke.bool().required(),
 });
 
 function App() {

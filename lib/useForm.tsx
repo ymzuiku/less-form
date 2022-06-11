@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useRef } from "react";
 import { CreateObserver, ObControl } from "react-ob";
-import { firstError } from "soke";
 import { updator } from "./updator";
-import { isYupSchema } from "./validateYupSchema";
 
 interface ConfigToContext<T> {
   validate?: (
@@ -66,8 +64,9 @@ export function useForm<T>({
       entryCheckAll: !!entryValidateAll,
       validateSchema,
       findFirstError: () => {
-        if (!isYupSchema(ref.current.validateSchema)) {
-          return firstError(ref.current.validateSchema, ref.current.errors);
+        const schema = ref.current.validateSchema;
+        if (schema.isSoke) {
+          return schema.firstError(ref.current.errors);
         }
         const fields: string[] = ref.current.fields;
         let err = "";
@@ -79,9 +78,9 @@ export function useForm<T>({
         return err;
       },
       validateAll: async () => {
-        if (!isYupSchema(ref.current.validateSchema)) {
-          const schemaKeys = Object.keys(ref.current.validateSchema);
-          schemaKeys.forEach((key) => {
+        const schema = ref.current.validateSchema;
+        if (schema.isSoke) {
+          schema.schemaKeys.forEach((key: string) => {
             (ref.current.touched as any)[key] = true;
           });
         } else {

@@ -1,4 +1,3 @@
-export * from "soke";
 export * from "./ErrorMessage";
 export * from "./Field";
 export * from "./FieldHOC";

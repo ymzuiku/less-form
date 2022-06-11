@@ -74,11 +74,6 @@ react@^18.1.0:
   dependencies:
     loose-envify "^1.1.0"
 
-soke@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/soke/-/soke-2.0.0.tgz#11b6d7663e3cf0531384f20cc7f689c166ec7f85"
-  integrity sha512-uE7uFNtUA+Npjdjc6TK4Uzxobk+DwEsl12nx/itw9zAsAR5nsu3m9Fg4taVTrPsjUO79m7qZ9lmq+/qMZXaEcg==
-
 tslib@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"

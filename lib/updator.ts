@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { validateSoke } from "soke";
 import { FormContext } from "./useForm";
 import { isYupSchema, validateYupSchema } from "./validateYupSchema";
 
@@ -32,8 +31,8 @@ export async function updator(ctx: FormContext<any>, key?: string) {
     if (isYupSchema(ctx.validateSchema)) {
       const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
-    } else {
-      const errors = validateSoke(ctx.validateSchema, ctx.val, key);
+    } else if (ctx.validateSchema.isSoke) {
+      const errors = ctx.validateSchema.validate(ctx.val, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
     }
   }
