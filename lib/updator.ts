@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { validateSoke } from "soke";
 import { FormContext } from "./useForm";
-import { validateTiny } from "./validateTiny";
-import { validateYupSchema } from "./validateYupSchema";
+import { isYupSchema, validateYupSchema } from "./validateYupSchema";
 
 function checkTouched(
   formOb: FormContext<any>,
@@ -29,11 +29,11 @@ export async function updator(ctx: FormContext<any>, key?: string) {
     Object.assign(ctx.errors, checkTouched(ctx, errors));
   } else if (ctx.validateSchema) {
     // 兼容 yup 的校验
-    if (ctx.validateSchema._blacklist) {
+    if (isYupSchema(ctx.validateSchema)) {
       const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
     } else {
-      const errors = validateTiny(ctx.validateSchema, ctx.val, key);
+      const errors = validateSoke(ctx.validateSchema, ctx.val, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
     }
   }

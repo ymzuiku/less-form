@@ -73,13 +73,14 @@ export function useFieldByContext<T>(
 
       if (typed === "undefined") {
         value = "";
-      } else if (typed === "object" && val.currentTarget) {
-        const type = val.currentTarget.type;
+      } else if (typed === "object" && (val.currentTarget || val.target)) {
+        const target = val.currentTarget || val.target;
+        const type = target.type;
 
         if (type === "checkbox" || type === "radio") {
-          value = !!val.currentTarget.checked;
-        } else if (val.currentTarget.multiple) {
-          const options = val.currentTarget.options;
+          value = !!target.checked;
+        } else if (target.multiple) {
+          const options = target.options;
           const values = [];
           for (var i = 0, l = options.length; i < l; i++) {
             if (options[i].selected) {
@@ -88,7 +89,7 @@ export function useFieldByContext<T>(
           }
           value = values;
         } else {
-          value = val.currentTarget.value;
+          value = target.value;
         }
       } else {
         value = val;

@@ -12,7 +12,7 @@ interface FieldsContext<T> {
   errors: Record<keyof T, string>;
   onChange: (name: keyof T, value: any) => void;
   // 只保留 initValue 时有key的属性
-  contentValues: () => T;
+  keepValues: (keys?: string[]) => T;
 }
 
 const emptyCtxs: FieldsContext<any> = {
@@ -20,7 +20,7 @@ const emptyCtxs: FieldsContext<any> = {
   values: {},
   errors: {},
   onChange: (name, value) => {},
-  contentValues: () => {},
+  keepValues: (keys?: string[]) => {},
 };
 
 export function useFieldsByContext<T>(
@@ -68,9 +68,10 @@ export function useFieldsByContext<T>(
       ctx.val[name] = value;
       ctx.next();
     },
-    contentValues: ctx.contentValues,
+    keepValues: ctx.keepValues,
   };
 }
+
 /** 监听多个 fields */
 export function useFields<T extends Record<string, unknown>, K>(
   names: string[],

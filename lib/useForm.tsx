@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useRef } from "react";
 import { CreateObserver, ObControl } from "react-ob";
+import { firstError } from "soke";
 import { updator } from "./updator";
+import { isYupSchema } from "./validateYupSchema";
 
 interface ConfigToContext<T> {
   validate?: (
@@ -25,8 +27,9 @@ export interface FormContext<T> extends ObControl<T>, ConfigToContext<T> {
   /** 验证所有参数，并且返回遇到的第一个错误 */
   validateAll: () => Promise<string>;
   validateKey: (key: keyof T) => Promise<string>;
-  fields: Set<string>;
-  contentValues: () => T;
+  fields: string[];
+  keepValues: (keys?: string[]) => T;
+  findFirstError: () => string;
 }
 
 export type FormContextAny = FormContext<any>;
@@ -42,13 +45,13 @@ export function useForm<T>({
   const ref = useRef<any>(CreateObserver(initialValues));
 
   useEffect(() => {
-    if (entryValidateAll) {
-      updator(ref.current);
+    if (entryValidateAll && ref.current.validateAll) {
+      ref.current.validateAll();
     }
   }, []);
 
   return useMemo(() => {
-    const fields = new Set(Object.keys(initialValues));
+    const fields = Object.keys(initialValues);
     const touched = {} as Record<keyof T, boolean>;
     fields.forEach((key) => {
       (touched as any)[key] = false;
@@ -62,12 +65,11 @@ export function useForm<T>({
       touched,
       entryCheckAll: !!entryValidateAll,
       validateSchema,
-      validateAll: async () => {
-        const fields: Set<string> = ref.current.fields;
-        fields.forEach((key) => {
-          (ref.current.touched as any)[key] = true;
-        });
-        await updator(ref.current);
+      findFirstError: () => {
+        if (!isYupSchema(ref.current.validateSchema)) {
+          return firstError(ref.current.validateSchema, ref.current.errors);
+        }
+        const fields: string[] = ref.current.fields;
         let err = "";
         fields.forEach((k) => {
           if (!err && ref.current.errors[k]) {
@@ -75,25 +77,31 @@ export function useForm<T>({
           }
         });
         return err;
+      },
+      validateAll: async () => {
+        if (!isYupSchema(ref.current.validateSchema)) {
+          const schemaKeys = Object.keys(ref.current.validateSchema);
+          schemaKeys.forEach((key) => {
+            (ref.current.touched as any)[key] = true;
+          });
+        } else {
+          const fields: string[] = ref.current.fields;
+          fields.forEach((key) => {
+            (ref.current.touched as any)[key] = true;
+          });
+        }
+        await updator(ref.current);
+        return ref.current.findFirstError();
       },
       validateKey: async (key: string) => {
-        const fields: Set<string> = ref.current.fields;
-        fields.forEach((key) => {
-          (ref.current.touched as any)[key] = true;
-        });
+        (ref.current.touched as any)[key] = true;
         await updator(ref.current, key);
-        let err = "";
-        fields.forEach((k) => {
-          if (!err && ref.current.errors[k]) {
-            err = ref.current.errors[k];
-          }
-        });
-        return err;
+        return ref.current.findFirstError();
       },
-      contentValues: () => {
-        const fields: Set<string> = ref.current.fields;
+      keepValues: (keys?: string[]) => {
+        const fields = keys || ref.current.fields;
         const out = {} as any;
-        fields.forEach((k) => {
+        fields.forEach((k: string) => {
           out[k] = ref.current.val[k];
         });
         return out;

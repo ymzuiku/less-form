@@ -1,6 +1,6 @@
 {
   "name": "less-form",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "umd/index.js",
   "types": "lib/index.ts",
   "exports": {
@@ -15,8 +15,8 @@
   },
   "private": false,
   "scripts": {
-    "esm": "esbuild --define:process.env.NODE_ENV=\\\"production\\\" lib/index.ts --outdir=esm --target=es6  --bundle --inject:./react-shim.js --external:react --external:react-ob2 --format=esm --minify --splitting",
-    "cjs": "esbuild --define:process.env.NODE_ENV=\\\"production\\\" lib/index.ts --outdir=cjs --target=es6  --bundle --inject:./react-shim.js --external:react --external:react-ob --format=cjs --minify",
+    "esm": "esbuild --define:process.env.NODE_ENV=\\\"production\\\" lib/index.ts --outdir=esm --target=es6  --bundle --inject:./react-shim.js --external:react --external:react-ob2 --external:soke --format=esm --minify --splitting",
+    "cjs": "esbuild --define:process.env.NODE_ENV=\\\"production\\\" lib/index.ts --outdir=cjs --target=es6  --bundle --inject:./react-shim.js --external:react --external:react-ob --external:soke --format=cjs --minify",
     "build": "yarn esm && yarn cjs"
   },
   "devDependencies": {
@@ -35,6 +35,7 @@
   },
   "homepage": "git+https://github.com/ymzuiku/less-form.git",
   "dependencies": {
-    "react-ob": "^2.2.5"
+    "react-ob": "^2.2.5",
+    "soke": "^2.0.0"
   }
 }

@@ -2,6 +2,10 @@
 
 const conf = { abortEarly: false };
 
+export function isYupSchema(schema: any): boolean {
+  return !!schema._blacklist;
+}
+
 export async function validateYupSchema(
   schema: any,
   values: Record<string, any>,
