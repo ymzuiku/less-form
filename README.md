@@ -10,7 +10,14 @@ Build forms in React, only Controlled Components.
 ## Example
 
 ```tsx
-import { ErrorMessage, Field, LessForm, useField, useForm, soke } from "less-form";
+import { 
+  ErrorMessage, // get error label
+  LessForm, // Provider form
+  Field,    // Consumer component
+  FieldHOC, // Change a compoent to Consumer component HOC
+  useField, // useContext, get a field data
+  useForm,  // create Provider value
+} from "less-form";
 import { soke } from "soke";
 
 const schema = soke.object({
@@ -39,19 +46,21 @@ function App() {
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
         <LessForm value={form}>
           <div>
-            <Field type="email" placeholder="please input email" name="email" />
+            <Field name="email">
+              {(ctx)=><input type="email" placeholder="please input email" {...ctx} />}
+            </Field>
             <ErrorMessage name="email" />
           </div>
           <div>
-            <Field type="phone" placeholder="please input phone" name="phone" />
+            <Field name="phone">
+              {(ctx)=><input type="phone" placeholder="please input phone" {...ctx} />}
+            </Field>
             <ErrorMessage name="phone" />
           </div>
           <div>
-            <Field
-              type="password"
-              placeholder="please input password"
-              name="password"
-            />
+            <Field name="password">
+              {(ctx)=><input type="password" placeholder="please input password" {...ctx} />}
+            </Field>
             <ErrorMessage name="password" />
           </div>
         </LessForm>
@@ -90,15 +99,18 @@ function Phone() {
   );
 }
 
-function Password() {
-  const field = useField("password");
+// base UI component
+function BasePassword({onChange, value}) {
   return (
     <div>
-      <input placeholder="please input password" type="password" {...field} />
+      <input placeholder="please input password" type="password" onChange={onChange} value={value} />
       <div>{field.error}</div>
     </div>
   );
 }
+
+// HOC to component, add useField in component
+function Password = FieldHOC(BasePassword);
 
 function Friends() {
   const field = useField("friends");

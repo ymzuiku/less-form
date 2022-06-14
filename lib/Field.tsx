@@ -1,28 +1,18 @@
-import { CSSProperties } from "react";
-import { useField } from "./useField";
+import { FieldContext, LoadType, useField } from "./useField";
 
-export interface FieldProps
-  extends React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  > {
-  className?: string;
-  style?: CSSProperties;
-  placeholder?: string;
-  type?: string;
-  name: string;
+export interface FieldProps<T> {
+  name: keyof T;
+  loadType?: LoadType;
+  children: (ctx: FieldContext<T>) => any;
 }
 
-export function Field({ name, children, ...rest }: FieldProps) {
-  const ctx = useField(name);
+// render props
+export function Field<T extends Record<string, unknown>>({
+  name,
+  children,
+  loadType,
+}: FieldProps<T>) {
+  const ctx = useField(name, loadType);
 
-  return (
-    <input
-      name={name}
-      value={ctx.value}
-      onChange={ctx.onChange}
-      onBlur={ctx.onBlur}
-      {...rest}
-    ></input>
-  );
+  return children(ctx);
 }

@@ -7,7 +7,7 @@ import { FormContext } from "./useForm";
 
 export type LoadType = "value" | "error";
 
-interface FieldContext<T> {
+export interface FieldContext<T> {
   name: keyof T;
   value: any;
   error: Partial<Record<keyof T, string>>[keyof T];
