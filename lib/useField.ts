@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect } from "react";
 import { useObserver } from "react-ob";
+import { getin, setin } from "set-get-in";
 import { SignleContext } from "./SingleContext";
 import { updator } from "./updator";
 import { FormContext } from "./useForm";
@@ -39,21 +40,23 @@ export function useFieldByContext<T>(
   // 根据 loadType 判断是监听 value 还是 error 或者两者均监听
   const ob = useObserver(ctx, (v) =>
     !loadType
-      ? [v[name], ctx.errors[name]]
+      ? [getin(v, name), ctx.errors[name]]
       : loadType == "error"
       ? [ctx.errors[name]]
-      : [v[name]]
+      : [getin(v, name)]
   );
 
   useEffect(() => {
-    if (ctx.val[name]) {
-      field.onChange(ctx.val[name]);
+    const val = getin(ob, name);
+    if (val !== undefined) {
+      field.onChange(val);
     }
   }, []);
 
+  const val = getin(ob, name);
   const field = {
     name,
-    value: ob[name] == undefined ? "" : ob[name],
+    value: val == undefined ? "" : val,
     error: typeof ctx.errors[name] === "undefined" ? "" : ctx.errors[name],
     onBlur: (e: any) => {
       if (e.persist) {
@@ -61,7 +64,8 @@ export function useFieldByContext<T>(
       }
       if (!ctx.touched[name]) {
         ctx.touched[name] = true;
-        field.onChange(ob[name]);
+        const val = getin(ob, name);
+        field.onChange(val);
       }
     },
     onChange: (val: any) => {
@@ -95,7 +99,8 @@ export function useFieldByContext<T>(
         value = val;
       }
 
-      (ctx.val as any)[name] = value;
+      // (ctx.val as any)[name] = value;
+      setin(ctx.val, name, value);
       if (ctx.handleChange) {
         ctx.val = ctx.handleChange(ctx.val, name as string);
       }

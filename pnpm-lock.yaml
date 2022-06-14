@@ -8,11 +8,13 @@ specifiers:
   '@types/react': ^18.0.10
   react: 17.0.2
   react-ob: ^2.2.5
+  set-get-in: ^0.1.0
   tslib: ^2.3.1
   typescript: ^4.6.3
 
 dependencies:
   react-ob: 2.2.5
+  set-get-in: 0.1.0
 
 devDependencies:
   '@types/fs-extra': 9.0.13
@@ -80,6 +82,10 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
     dev: true
+
+  /set-get-in/0.1.0:
+    resolution: {integrity: sha512-WhS8RE9WsBBtpH1LxAcOjNdzGlVjtjlA4Y+Df/9+59SyI0gpbe/Vj+0Wc0ucwt2Dna9EZ0QJEt1YyNMporEHRw==}
+    dev: false
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}

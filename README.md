@@ -146,3 +146,45 @@ function Checkbox() {
 
 export default App;
 ```
+
+
+## Set in and get in
+
+
+```tsx
+import { ErrorMessage, Field, LessForm, useForm } from "less-form";
+import { soke } from "soke";
+
+// getin, setin error not support in yup
+const schema = soke.object({
+  "columns.0.name": soke.string().min(5, "need a email").required(),
+});
+
+export default function ExampleLessForm() {
+  const form = useForm({
+    initialValues: {
+      columns: [{ name: "" }],
+    },
+    validateSchema: schema,
+    handleChange: (values, name) => {
+      console.log("__debug__", values, name);  // {columns: [{ name: "" }]} ; "columns.0.name"
+      return values;
+    },
+  });
+
+  return (
+    <div className="App">
+      <div style={{ marginTop: 20 }}>Less form(use Field)</div>
+      <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
+        <LessForm value={form}>
+          <Field name="columns.0.name">
+            {(ctx) => <input type="email" placeholder="please input email" {...ctx} />}
+          </Field>
+          <ErrorMessage name="columns.0.name" />
+        </LessForm>
+      </div>
+    </div>
+  );
+}
+
+```

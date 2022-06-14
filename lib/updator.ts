@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getin } from "set-get-in";
 import { FormContext } from "./useForm";
 import { isYupSchema, validateYupSchema } from "./validateYupSchema";
 
@@ -24,12 +25,17 @@ export async function updator(ctx: FormContext<any>, key?: string) {
     const errors: any = await Promise.resolve(ctx.validate(ctx.val, key));
     Object.assign(ctx.errors, checkTouched(ctx, errors));
   } else if (ctx.validateSchema) {
+    const schema = ctx.validateSchema;
     // 兼容 yup 的校验
-    if (isYupSchema(ctx.validateSchema)) {
-      const errors = await validateYupSchema(ctx.validateSchema, ctx.val, key);
+    if (isYupSchema(schema)) {
+      const errors = await validateYupSchema(schema, ctx.val, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
-    } else if (ctx.validateSchema.isSoke) {
-      const errors = ctx.validateSchema.validate(ctx.val, key);
+    } else if (schema.isSoke) {
+      const vals = {} as any;
+      schema.schemaKeys.forEach((key: string) => {
+        vals[key] = getin(ctx.val, key);
+      });
+      const errors = schema.validate(vals, key);
       Object.assign(ctx.errors, checkTouched(ctx, errors));
     }
   }

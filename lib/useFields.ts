@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext } from "react";
 import { useObserver } from "react-ob";
+import { getin, setin } from "set-get-in";
 import { SignleContext } from "./SingleContext";
 import { FormContext } from "./useForm";
 
@@ -56,7 +57,7 @@ export function useFieldsByContext<T>(
   const values = {} as any;
   const errors = {} as any;
   names.forEach((name) => {
-    values[name] = (ctx.val as any)[name];
+    values[name] = getin(ctx.val, name);
     errors[name] = ((ctx.errors as any)[name] || "") as any;
   });
 
@@ -65,7 +66,7 @@ export function useFieldsByContext<T>(
     values,
     errors,
     onChange: (name: keyof T, value: any) => {
-      ctx.val[name] = value;
+      setin(ctx.val, name, value);
       ctx.next();
     },
     keepValues: ctx.keepValues,
