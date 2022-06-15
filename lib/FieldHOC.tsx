@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Override } from "./types";
 import { LoadType, useField } from "./useField";
 
@@ -20,9 +21,11 @@ export function FieldHOC<T>(Component: any) {
   }: FieldHOCProps<T>) {
     if (name) {
       const ctx = useField(name, loadType);
-      if (onChange) {
-        onChange(ctx.value);
-      }
+      useEffect(() => {
+        if (onChange) {
+          onChange(ctx.value);
+        }
+      }, [ctx.value]);
       return <Component {...ctx} {...rest} />;
     }
 

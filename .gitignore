@@ -68,7 +68,8 @@ build/
 .gradle
 local.properties
 *.iml
-
+pnpm-global
+**/pnpm-global
 #
 node_modules/
 **/node_modules/

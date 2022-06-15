@@ -62,14 +62,14 @@ export function useFieldByContext<T>(
       if (e.persist) {
         e.persist();
       }
-      if (!ctx.touched[name]) {
-        ctx.touched[name] = true;
-        const val = getin(ob, name);
-        field.onChange(val);
-      }
+      // if (!ctx.touched[name]) {
+      //   ctx.touched[name] = true;
+      //   const val = getin(ob, name);
+      //   field.onChange(val);
+      // }
     },
     onChange: (val: any) => {
-      if (!ctx.touched[name]) {
+      if (val && !ctx.touched[name]) {
         ctx.touched[name] = true;
       }
       let typed = typeof val;
