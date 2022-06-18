@@ -28,22 +28,14 @@ const emptyCtx: FieldContext<any> = {
   },
 };
 
-export function useFieldByContext<T>(
-  ctx: FormContext<T>,
-  name: keyof T,
-  loadType?: LoadType
-): FieldContext<T> {
+export function useFieldByContext<T>(ctx: FormContext<T>, name: keyof T, loadType?: LoadType): FieldContext<T> {
   if (!ctx) {
     return emptyCtx;
   }
 
   // 根据 loadType 判断是监听 value 还是 error 或者两者均监听
   const ob = useObserver(ctx, (v) =>
-    !loadType
-      ? [getin(v, name), ctx.errors[name]]
-      : loadType == "error"
-      ? [ctx.errors[name]]
-      : [getin(v, name)]
+    !loadType ? [getin(v, name), ctx.errors[name]] : loadType == "error" ? [ctx.errors[name]] : [getin(v, name)],
   );
 
   useEffect(() => {
@@ -69,6 +61,9 @@ export function useFieldByContext<T>(
       // }
     },
     onChange: (val: any) => {
+      if (!ctx.touched[name] && !val) {
+        return;
+      }
       if (val && !ctx.touched[name]) {
         ctx.touched[name] = true;
       }
@@ -105,17 +100,14 @@ export function useFieldByContext<T>(
         ctx.val = ctx.handleChange(ctx.val, name as string);
       }
 
-      updator(ctx, name as string);
+      updator(ctx, { first: true, key: name as string, typeChange: false });
     },
   };
 
   return field;
 }
 
-export function useField<T>(
-  name: keyof T,
-  loadType?: LoadType
-): FieldContext<T> {
+export function useField<T>(name: keyof T, loadType?: LoadType): FieldContext<T> {
   const ctx = useContext(SignleContext);
   return useFieldByContext(ctx, name, loadType);
 }

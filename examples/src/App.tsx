@@ -10,6 +10,17 @@ const schema = yup.object({
   radio: yup.bool().equals([true]).required(),
 });
 
+// import { soke } from "soke";
+
+// const schema = soke.object({
+//   email: soke.string().email().required(),
+//   phone: soke.string().min(6).max(13).required(),
+//   password: soke.string().min(6).required(),
+//   friends: soke.array().min(3).required(),
+//   isMan: soke.bool().required(),
+//   radio: soke.bool().required(),
+// });
+
 function App() {
   const form = useForm({
     initialValues: {
@@ -20,7 +31,6 @@ function App() {
       isMan: false,
       radio: false,
     },
-    entryValidateAll: true,
     validateSchema: schema,
   });
 
@@ -30,33 +40,29 @@ function App() {
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
         <LessForm value={form}>
           <div>
-            <Field type="email" placeholder="please input email" name="email" />
+            <Field name="email">{(field) => <input {...field} />}</Field>
             <ErrorMessage name="email" />
           </div>
           <div>
-            <Field type="phone" placeholder="please input phone" name="phone" />
+            <Field name="phone">{(field) => <input {...field} />}</Field>
             <ErrorMessage name="phone" />
           </div>
           <div>
-            <Field
-              type="password"
-              placeholder="please input password"
-              name="password"
-            />
+            <Field name="password">{(field) => <input {...field} />}</Field>
             <ErrorMessage name="password" />
           </div>
         </LessForm>
       </div>
       <div style={{ marginTop: 20 }}>Less form(use Custom Component)</div>
       <div style={{ padding: 10, margin: 10, border: "1px solid #aaa" }}>
-        <LessForm value={form}>
+        {/* <LessForm value={form}>
           <Email />
           <Phone />
           <Password />
           <Friends />
           <Checkbox />
           <Radio />
-        </LessForm>
+        </LessForm> */}
       </div>
     </div>
   );
