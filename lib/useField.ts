@@ -54,19 +54,12 @@ export function useFieldByContext<T>(ctx: FormContext<T>, name: keyof T, loadTyp
       if (e.persist) {
         e.persist();
       }
-      // if (!ctx.touched[name]) {
-      //   ctx.touched[name] = true;
-      //   const val = getin(ob, name);
-      //   field.onChange(val);
-      // }
+      if (!ctx.touched[name]) {
+        ctx.touched[name] = true;
+        updator(ctx, { first: true, key: name as string, typeChange: false });
+      }
     },
     onChange: (val: any) => {
-      if (!ctx.touched[name] && !val) {
-        return;
-      }
-      if (val && !ctx.touched[name]) {
-        ctx.touched[name] = true;
-      }
       let typed = typeof val;
       let value;
 
@@ -100,7 +93,11 @@ export function useFieldByContext<T>(ctx: FormContext<T>, name: keyof T, loadTyp
         ctx.val = ctx.handleChange(ctx.val, name as string);
       }
 
-      updator(ctx, { first: true, key: name as string, typeChange: false });
+      if (ctx.touched[name]) {
+        updator(ctx, { first: true, key: name as string, typeChange: false });
+      } else {
+        ctx.next();
+      }
     },
   };
 

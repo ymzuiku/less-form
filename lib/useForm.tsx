@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useRef } from "react";
 import { CreateObserver, ObControl } from "react-ob";
+import { updator } from "./updator";
 
 export interface ValidateOptions {
   key?: string;
@@ -25,7 +26,7 @@ export interface FormContext<T> extends ObControl<T>, ConfigToContext<T> {
   errorPath: string;
   touched: Record<keyof T, boolean>;
   /** 验证所有参数，并且返回遇到的第一个错误 */
-  validate: (value: T, changeName: string) => Promise<string>;
+  isValid: (opt?: ValidateOptions) => string;
 }
 
 export type FormContextAny = FormContext<any>;
@@ -43,6 +44,10 @@ export function useForm<T>({ initialValues, validate, validateSchema, handleChan
     ref.current = {
       ...ref.current,
       validate,
+      isValid: (opt: ValidateOptions = {}) => {
+        updator(ref.current, opt);
+        return ref.current.error;
+      },
       errors: {},
       error: "",
       touched,
